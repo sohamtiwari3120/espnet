@@ -35,10 +35,15 @@ set -o pipefail
 
 if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
     log "stage 0: Data Downloading"
+    if [ -d "${PRABHUPADAVANI}/" ]; then
+        echo "Deleting existing contents of ${PRABHUPADAVANI}"
+        rm -rf "${PRABHUPADAVANI}"
+    fi
     python local/download_speech_data.py 
     mv "11692 Speech Processing Data/" "${PRABHUPADAVANI}/"
     unzip "${PRABHUPADAVANI}/Data_Splits.zip" -d "${PRABHUPADAVANI}/Data_Splits/" && rm -rf "${PRABHUPADAVANI}/Data_Splits.zip"
     unzip "${PRABHUPADAVANI}/Speech_Audio_Data.zip" -d "${PRABHUPADAVANI}/Speech_Audio_Data/" && rm -rf "${PRABHUPADAVANI}/Speech_Audio_Data.zip"
+    echo "Finished downloading"
 fi
 
 if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
@@ -48,8 +53,8 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     mkdir -p data/test
     mkdir -p data/dev
     # NOTE: train/dev/test splits are different from original CommonVoice
-
-    # python generating_wav_scp
+    python local/correct_train_csv.py
+    python local/generate_wav_scp.py
     # python generating_text.tc.en
 fi
 
