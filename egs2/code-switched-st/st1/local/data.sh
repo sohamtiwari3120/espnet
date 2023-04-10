@@ -68,7 +68,11 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/dev.csv --output data/dev/text.tc.hi
     echo "Generated text.tc.hi for train, dev and test splits"
 
-    
+    # generating utt2spk and spk2utt dummy files
+    python local/generate_utt_spk_files.py --folder data/train/
+    python local/generate_utt_spk_files.py --folder data/test/
+    python local/generate_utt_spk_files.py --folder data/dev/
+    echo "Generated utt2spk and spk2utt dummy files for train, test and dev splits"
 fi
 
 
