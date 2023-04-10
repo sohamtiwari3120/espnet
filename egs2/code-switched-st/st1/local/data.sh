@@ -32,6 +32,7 @@ set -u
 set -o pipefail
 
 
+echo ${stage}
 
 if [ ${stage} -le 0 ] && [ ${stop_stage} -ge 0 ]; then
     log "stage 0: Data Downloading"
@@ -55,7 +56,19 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     # NOTE: train/dev/test splits are different from original CommonVoice
     python local/correct_train_csv.py
     python local/generate_wav_scp.py
-    # python generating_text.tc.en
+    
+    # Generate the text.tc.<language> files
+    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/train.csv --output data/train/text.tc.en
+    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/test.csv --output data/test/text.tc.en
+    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/dev.csv --output data/dev/text.tc.en
+    echo "Generated text.tc.en for train, dev and test splits"
+
+    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/train.csv --output data/train/text.tc.hi
+    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/test.csv --output data/test/text.tc.hi
+    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/dev.csv --output data/dev/text.tc.hi
+    echo "Generated text.tc.hi for train, dev and test splits"
+
+    
 fi
 
 
