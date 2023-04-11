@@ -22,6 +22,8 @@ def generate_text(args):
     # Select specified language
     try:
         train_lang = file_csv[['time_stamp',f"{args.lang}[100%].srt"]]
+        drop_index = train_lang[train_lang['time_stamp'].str.contains("0580_clip36")].index
+        train_lang = train_lang.drop(drop_index)
     except:
         raise Exception("Error selecting language. Make sure it's specified like English or Hindi")
     

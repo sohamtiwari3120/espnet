@@ -9,12 +9,14 @@ def parse_args():
     parser.add_argument('--output_dir', type=str, default="data/")
     return parser.parse_args()
 
-def write_to_file(df, output_file, uttid_path_dict):
+def write_to_file(df, output_file, uttid_path_dict, skip_ids=[]):
     wav_scp_fp = open(output_file, "w")
     for index, row in df.iterrows():
         uttid = row["time_stamp"]
+        if uttid in skip_ids:
+            continue
         audio_path = uttid_path_dict[uttid]
-        wav_scp_fp.write("{}\t{}\n".format(uttid, audio_path))
+        wav_scp_fp.write("{}\tffmpeg -i \"{}\" -f wav -ar 16000 -ab 16 -ac 1 - |\n".format(uttid, audio_path))
     wav_scp_fp.close()
 
 def generate_wav_scp_file(args):
@@ -33,11 +35,13 @@ def generate_wav_scp_file(args):
     train_csv = pd.read_csv(os.path.join(args.input_splits_csv_dir, "train.csv"))
     dev_csv = pd.read_csv(os.path.join(args.input_splits_csv_dir, "dev.csv"))
 
-    write_to_file(test_csv, os.path.join(args.output_dir, "test", "wav.scp"), uttid_path_dict)
+    skip_ids = ["0580_clip36"]
 
-    write_to_file(train_csv, os.path.join(args.output_dir, "train", "wav.scp"), uttid_path_dict)
+    write_to_file(test_csv, os.path.join(args.output_dir, "test", "wav.scp"), uttid_path_dict, skip_ids=skip_ids)
 
-    write_to_file(dev_csv, os.path.join(args.output_dir, "dev", "wav.scp"), uttid_path_dict)
+    write_to_file(train_csv, os.path.join(args.output_dir, "train", "wav.scp"), uttid_path_dict, skip_ids=skip_ids)
+
+    write_to_file(dev_csv, os.path.join(args.output_dir, "dev", "wav.scp"), uttid_path_dict, skip_ids=skip_ids)
 
 
 if __name__ == '__main__':
