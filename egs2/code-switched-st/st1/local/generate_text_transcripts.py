@@ -4,7 +4,9 @@
 import argparse
 import pandas as pd
 import csv
-
+from nltk.tokenize import WordPunctTokenizer
+from indicnlp.tokenize.indic_tokenize import trivial_tokenize_indic
+from indicnlp.normalize.indic_normalize import DevanagariNormalizer
 
 def parse_args():
     # Take in input csv, target language, and output file
@@ -12,20 +14,48 @@ def parse_args():
     parser.add_argument('--input', type=str, required=True)
     parser.add_argument('--lang', type=str, required=True)
     parser.add_argument('--output', type=str, required=True)
+    parser.add_argument('--normalize', action='store_true')
     return parser.parse_args()
 
-def generate_text(args):
+def normalize(txt):
+    if not (args.lang == "Hindi" or args.lang == "English"):
+        raise NotImplementedError("The only languages implemented right now are English or Hindi.")
+    if args.lang == "Hindi":
+        # hindi script normalization
+        txt = DevanagariNormalizer().normalize(txt)
+        # punctuation tokenization
+        tokens = trivial_tokenize_indic(txt)
+    elif args.lang == "English":
+        txt = txt.upper()
+        tokens = WordPunctTokenizer().tokenize(txt)
+    normalized_txt =  " ".join(tokens) 
+    return normalized_txt
+
+
+if __name__ == '__main__':
+    args = parse_args()
+    
+    # Read input CSV
     try:
         file_csv = pd.read_csv(args.input)
     except:
         raise Exception("Error reading input file. Check input path.")
     # Select specified language
+    col_name = f"{args.lang}[100%].srt"
     try:
-        train_lang = file_csv[['time_stamp',f"{args.lang}[100%].srt"]]
-        drop_index = train_lang[train_lang['time_stamp'].str.contains("0580_clip36")].index
-        train_lang = train_lang.drop(drop_index)
+        train_lang = file_csv[['time_stamp', col_name]]
     except:
         raise Exception("Error selecting language. Make sure it's specified like English or Hindi")
+    
+    # If specified, normalize
+    if args.normalize:
+        print("Normalizing!")
+        try:
+            pd.options.mode.chained_assignment = None
+            txt_normalized = train_lang.loc[:,col_name].apply(normalize)
+            train_lang.loc[:,col_name] = txt_normalized.copy()
+        except:
+            raise Exception("Error normalizing text.")
     
     # Write output
     try:
@@ -34,8 +64,3 @@ def generate_text(args):
                           quoting=csv.QUOTE_NONE)
     except:
         raise Exception("Error writing output file. Check that the directory exists.")
-
-if __name__ == '__main__':
-    args = parse_args()
-    # Read input CSV
-    generate_text(args)
