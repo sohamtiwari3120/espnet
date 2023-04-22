@@ -7,8 +7,11 @@ set -o pipefail
 
 # language related
 src_lang=code_mixed
-tgt_lang=en
+tgt_lang=hi
 use_src_lang=false
+
+st_config=conf/train_st6_branchformer.yaml
+inference_config=conf/decode_st.yaml
 
 # English (en)
 # French (fr)
@@ -41,11 +44,11 @@ tgt_case=tc
 train_set=train
 train_dev=dev
 test_sets="test"
-stage=3
+stage=2
 
 # verify language directions
 # is_exist=false
-# is_low_resource=false
+is_low_resource=false
 # if [[ ${src_lang} == en ]]; then
 #     tgt_langs=de_ca_zh-CN_fa_et_mn_tr_ar_sv-SE_lv_sl_ta_ja_id_cy
 #     for lang in $(echo ${tgt_langs} | tr '_' ' '); do
@@ -74,11 +77,11 @@ stage=3
 #     echo "No language direction: ${src_lang} to ${tgt_lang}" && exit 1;
 # fi
 
-# if [ ${is_low_resource} = true ]; then
-#     speed_perturb_factors="0.8 0.9 1.0 1.1 1.2"
-# else
-#     speed_perturb_factors="0.9 1.0 1.1"
-# fi
+if [ ${is_low_resource} = true ]; then
+    speed_perturb_factors="0.8 0.9 1.0 1.1 1.2"
+else
+    speed_perturb_factors="0.9 1.0 1.1"
+fi
 
 # if [ ${src_lang} == ja ] || [ ${src_lang} == zh-CN ]; then
 #     src_nbpe=4000
@@ -110,7 +113,23 @@ stage=3
     --test_sets "${test_sets}" \
     --src_bpe_train_text "data/${train_set}/text.${src_case}.${src_lang}" \
     --tgt_bpe_train_text "data/${train_set}/text.${tgt_case}.${tgt_lang}" \
-    --lm_train_text "data/${train_set}/text.${tgt_case}.${tgt_lang}"  "$@"
-    # --st_config "${st_config}" \
-    # --inference_config "${inference_config}" \
-    # --speed_perturb_factors "${speed_perturb_factors}" \
+    --lm_train_text "data/${train_set}/text.${tgt_case}.${tgt_lang}" \
+    --st_config "${st_config}" \
+    --inference_config "${inference_config}" \
+    --speed_perturb_factors "${speed_perturb_factors}" "$@"
+
+
+# on new data
+# find in error analysis using the different architectures
+# demo for real time analysis
+# error analysis being interesting is more important and finding insights
+# future interesting work
+
+# open source s2text implementations - espnet-st 
+# Searchable Hidden Intermediates for End-to-End Models of Decomposable Sequence Tasks
+# brian yan
+
+
+
+
+

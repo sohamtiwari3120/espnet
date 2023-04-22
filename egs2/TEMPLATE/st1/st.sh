@@ -516,13 +516,14 @@ if ! "${skip_data_prep}"; then
             # and it can also change the audio-format and sampling rate.
             # If nothing is need, then format_wav_scp.sh does nothing:
             # i.e. the input file format and rate is same as the output.
-
+            echo "${train_set}" "${valid_set}" ${test_sets}
             for dset in "${train_set}" "${valid_set}" ${test_sets}; do
                 if [ "${dset}" = "${train_set}" ] || [ "${dset}" = "${valid_set}" ]; then
                     _suf="/org"
                 else
                     _suf=""
                 fi
+                echo data/"${dset}" "${data_feats}${_suf}/${dset}"
                 utils/copy_data_dir.sh --validate_opts --non-print data/"${dset}" "${data_feats}${_suf}/${dset}"
 
                 # expand the utt_extra_files for multi-references
@@ -1518,7 +1519,7 @@ if ! "${skip_eval}"; then
 
             if [ ${tgt_case} = "tc" ]; then
                 echo "Case sensitive BLEU result (single-reference)" > ${_scoredir}/result.tc.txt
-                sacrebleu "${_scoredir}/ref.trn.detok" \
+                python -m sacrebleu "${_scoredir}/ref.trn.detok" \
                           -i "${_scoredir}/hyp.trn.detok" \
                           -m bleu chrf ter \
                           >> ${_scoredir}/result.tc.txt
@@ -1530,7 +1531,7 @@ if ! "${skip_eval}"; then
             scripts/utils/remove_punctuation.pl < "${_scoredir}/ref.trn.detok" > "${_scoredir}/ref.trn.detok.lc.rm"
             scripts/utils/remove_punctuation.pl < "${_scoredir}/hyp.trn.detok" > "${_scoredir}/hyp.trn.detok.lc.rm"
             echo "Case insensitive BLEU result (single-reference)" > ${_scoredir}/result.lc.txt
-            sacrebleu -lc "${_scoredir}/ref.trn.detok.lc.rm" \
+            python -m sacrebleu -lc "${_scoredir}/ref.trn.detok.lc.rm" \
                       -i "${_scoredir}/hyp.trn.detok.lc.rm" \
                       -m bleu chrf ter \
                       >> ${_scoredir}/result.lc.txt
