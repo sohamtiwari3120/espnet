@@ -7,9 +7,10 @@ set -o pipefail
 
 # language related
 src_lang=code_mixed
-tgt_lang=hi
+tgt_lang=en
 use_src_lang=false
 
+# st_config=conf/train_st4_conformer.yaml
 st_config=conf/train_st6_branchformer.yaml
 inference_config=conf/decode_st.yaml
 
@@ -45,6 +46,7 @@ train_set=train
 train_dev=dev
 test_sets="test"
 stage=2
+# skip_train=true
 
 # verify language directions
 # is_exist=false
@@ -115,8 +117,8 @@ fi
     --tgt_bpe_train_text "data/${train_set}/text.${tgt_case}.${tgt_lang}" \
     --lm_train_text "data/${train_set}/text.${tgt_case}.${tgt_lang}" \
     --st_config "${st_config}" \
-    --inference_config "${inference_config}" \
-    --speed_perturb_factors "${speed_perturb_factors}" "$@"
+    --inference_config "${inference_config}" "$@"
+    # --speed_perturb_factors "${speed_perturb_factors}" "$@"
 
 
 # on new data
