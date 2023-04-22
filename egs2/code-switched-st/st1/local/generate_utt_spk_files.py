@@ -14,7 +14,7 @@ def generate_spk_utt_files(args):
         line = line.strip()
         if line:
             uttid = line.split('\t')[0]
-            spkid = f"speaker_{i:07d}"
+            spkid = f"id_{i:07d}"
             utt2spk_fp.write(f"{uttid}\t{spkid}\n")
             spk2utt_fp.write(f"{spkid}\t{uttid}\n")
     wav_scp_fp.close()
