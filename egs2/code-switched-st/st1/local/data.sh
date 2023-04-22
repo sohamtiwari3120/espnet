@@ -58,14 +58,14 @@ if [ ${stage} -le 1 ] && [ ${stop_stage} -ge 1 ]; then
     python local/generate_wav_scp.py
     
     # Generate the text.tc.<language> files
-    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/train.csv --output data/train/text.tc.en
-    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/test.csv --output data/test/text.tc.en
-    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/dev.csv --output data/dev/text.tc.en
+    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/train.csv --output data/train/text.tc.en --normalize
+    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/test.csv --output data/test/text.tc.en --normalize
+    python local/generate_text_transcripts.py --lang English --input downloads/Data_Splits/Data/dev.csv --output data/dev/text.tc.en --normalize
     echo "Generated text.tc.en for train, dev and test splits"
 
-    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/train.csv --output data/train/text.tc.hi
-    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/test.csv --output data/test/text.tc.hi
-    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/dev.csv --output data/dev/text.tc.hi
+    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/train.csv --output data/train/text.tc.hi --normalize
+    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/test.csv --output data/test/text.tc.hi --normalize
+    python local/generate_text_transcripts.py --lang Hindi --input downloads/Data_Splits/Data/dev.csv --output data/dev/text.tc.hi --normalize
     echo "Generated text.tc.hi for train, dev and test splits"
 
     # generating utt2spk and spk2utt dummy files
