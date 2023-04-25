@@ -7,10 +7,10 @@
 . ./db.sh || exit 1;
 
 # general configuration
-stage=0       # start from 0 if you need to start from data preparation
+stage=$1      # start from 0 if you need to start from data preparation
 stop_stage=100
 SECONDS=0
-tgt_lang=en # or 'hi'
+# tgt_lang=$2 # or 'hi'
 
  . utils/parse_options.sh || exit 1;
 

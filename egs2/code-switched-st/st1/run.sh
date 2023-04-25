@@ -5,13 +5,20 @@ set -e
 set -u
 set -o pipefail
 
+# CUDA_VISIBLE_DEVICES=1
+# if [ -z "$CUDA_VISIBLE_DEVICES" ]; then
+#     echo "Error: Argument must not be empty. You need to provide CUDA_VISIBLE_DEVICES value"
+#     exit 1
+# fi
 # language related
+echo "USING CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 src_lang=code_mixed
-tgt_lang=en
+tgt_lang=hi
+# tgt_lang=en
 use_src_lang=false
 
-# st_config=conf/train_st4_conformer.yaml
-st_config=conf/train_st6_branchformer.yaml
+# st_config=conf/train_st4_conformer_normalized.yaml
+st_config=conf/train_st6_branchformer_normalized.yaml
 inference_config=conf/decode_st.yaml
 
 # English (en)

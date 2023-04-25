@@ -18,6 +18,9 @@ def parse_args():
     return parser.parse_args()
 
 def normalize(txt):
+    txt = txt.strip()
+    if len(txt) == 0 or txt is None:
+        txt = "."
     if not (args.lang == "Hindi" or args.lang == "English"):
         raise NotImplementedError("The only languages implemented right now are English or Hindi.")
     if args.lang == "Hindi":
@@ -56,7 +59,6 @@ if __name__ == '__main__':
             train_lang.loc[:,col_name] = txt_normalized.copy()
         except:
             raise Exception("Error normalizing text.")
-    
     # Write output
     try:
         train_lang.to_csv(args.output, 
