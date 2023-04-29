@@ -13,12 +13,14 @@ set -o pipefail
 # language related
 echo "USING CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
 src_lang=code_mixed
-tgt_lang=hi
-# tgt_lang=en
+# tgt_lang=hi
+tgt_lang=en
 use_src_lang=false
 
 # st_config=conf/train_st4_conformer_normalized.yaml
-st_config=conf/train_st6_branchformer_normalized.yaml
+# st_config=conf/train_st8_branchformer_normalized_es10.yaml
+st_config=conf/train_st9_conformer_normalized_es10.yaml
+# st_config=conf/train_st6_branchformer_normalized.yaml
 inference_config=conf/decode_st.yaml
 
 # English (en)
@@ -103,7 +105,7 @@ fi
 ./st.sh \
     --ngpu 1 \
     --stage ${stage} \
-    --local_data_opts "--stage 0 --src_lang ${src_lang} --tgt_lang ${tgt_lang}" \
+    --local_data_opts "0 --src_lang ${src_lang} --tgt_lang ${tgt_lang}" \
     --use_lm false \
     --feats_type raw \
     --audio_format "flac.ark" \
